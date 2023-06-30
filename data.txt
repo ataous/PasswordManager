@@ -1,4 +1,0 @@
-
-Amazon | test@email.com | 123456
-aa | test@email.com | sdfsd
-v | test@email.com | dfgdf

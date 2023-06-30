@@ -1,10 +1,13 @@
+import json
+from random import randint, choices, shuffle
 from tkinter import *
 from tkinter import messagebox as msg
-from random import randint, choices, shuffle
+
 import pyperclip
 
 FONT_NAME = "Inter"
 DEFAULT_EMAIL = "test@email.com"
+DATA_FILE = "data.json"
 
 letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v',
            'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R',
@@ -37,8 +40,24 @@ def save():
                                                        f"Password: {password} \n"
                                                        f"Is it ok?")
         if check:
-            with open("data.txt", "a") as file:
-                file.write(f"{website} | {email} | {password}\n")
+            new_data = {
+                website: {
+                    "email": email,
+                    "password": password
+                }
+            }
+
+            try:
+                with open(DATA_FILE, "r") as file:
+                    data = json.load(file)
+            except FileNotFoundError:
+                with open(DATA_FILE, "w") as file:
+                    json.dump(new_data, file, indent=4)
+            else:
+                data.update(new_data)
+                with open(DATA_FILE, "w") as file:
+                    json.dump(data, file, indent=4)
+            finally:
                 inp_website.delete(0, END)
                 inp_email.delete(0, END)
                 inp_password.delete(0, END)
