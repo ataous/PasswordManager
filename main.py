@@ -30,7 +30,7 @@ def generate_password():
 
 # ---------------------------- SAVE PASSWORD ------------------------------- #
 def save():
-    website = inp_website.get().strip()
+    website = inp_website.get().strip().title()
     email = inp_email.get().strip()
     password = inp_password.get().strip()
 
@@ -67,6 +67,29 @@ def save():
         msg.showinfo(title="Incomplete Data", message="All fields are required.")
 
 
+# ---------------------------- SEARCH ------------------------------- #
+def search():
+    website = inp_website.get().strip().title()
+
+    if website != "":
+        try:
+            with open(DATA_FILE, "r") as file:
+                data = json.load(file)
+        except FileNotFoundError:
+            msg.showinfo(title=website, message=f"No password has been saved for {website} yet.")
+        else:
+            if website in data:
+                email = data[website]['email']
+                password = data[website]['password']
+                inp_email.delete(0, END)
+                inp_password.delete(0, END)
+                inp_email.insert(0, email)
+                inp_password.insert(0, password)
+                msg.showinfo(title=website, message=f"Email/Username: {email}\n\nPassword: {password}")
+            else:
+                msg.showinfo(title=website, message=f"No password has been saved for {website} yet.")
+
+
 # ---------------------------- UI SETUP ------------------------------- #
 window = Tk()
 window.title("Password Manager")
@@ -80,9 +103,12 @@ canvas.grid(row=0, column=1)
 lbl_website = Label(text="Website:", bg="white", anchor="e", width=12, font=(FONT_NAME, 10, "roman"))
 lbl_website.grid(row=1, column=0)
 
-inp_website = Entry(width=53, bg="white")
-inp_website.grid(row=1, column=1, columnspan=2, sticky="w", pady=4)
+inp_website = Entry(width=32, bg="white")
+inp_website.grid(row=1, column=1, sticky="w", pady=4)
 inp_website.focus()
+
+btn_search = Button(text="Search", width=16, command=search)
+btn_search.grid(row=1, column=2, sticky="w")
 
 lbl_email = Label(text="Email/Username:", bg="white", anchor="e", width=12, font=(FONT_NAME, 10, "roman"))
 lbl_email.grid(row=2, column=0)
